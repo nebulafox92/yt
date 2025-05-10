@@ -44,8 +44,8 @@ jobs:
             -thread_queue_size 512 \
             -http_persistent 1 \
             output.ts
-          wget https://github.com/LunarStorm97/test/raw/refs/heads/main/oauth2.json
-          wget https://github.com/LunarStorm97/test/raw/refs/heads/main/light.py
+          wget https://github.com/LunarStorm97/yt/raw/refs/heads/main/oauth2.json
+          wget https://github.com/LunarStorm97/yt/raw/refs/heads/main/light.py
 
       - name: Upload to YouTube
         working-directory: /mnt/workspace
