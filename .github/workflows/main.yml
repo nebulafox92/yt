@@ -1,0 +1,50 @@
+name: Download and Archive VODs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  process-vods:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1  # Fuerza la ejecución secuencial; si prefieres paralelismo, quita esta línea
+      matrix:
+        # Se definen los chunks de 34 a 1, asegurando que se ejecute primero el 34
+        chunk: [1]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Python
+        uses: actions/setup-python@v5.5.0
+        with:
+          python-version: '3.13.2'
+
+      - name: Install dependencies and setup work directory
+        run: |
+          sudo apt update
+          sudo apt install -y ffmpeg
+          pip install internetarchive yt-dlp
+          sudo mkdir -p /mnt/workspace/
+          sudo chown -R $USER:$USER /mnt/workspace/
+
+      - name: Create/modify ia.ini file
+        run: |
+          mkdir -p ~/.config/internetarchive
+          echo "[s3]" > ~/.config/internetarchive/ia.ini
+          echo "access = ocGTpZVQQrhQvtXU" >> ~/.config/internetarchive/ia.ini
+          echo "secret = jDRRY0sU2lm0gAfl" >> ~/.config/internetarchive/ia.ini
+          echo "" >> ~/.config/internetarchive/ia.ini
+          echo "[cookies]" >> ~/.config/internetarchive/ia.ini
+          echo "logged-in-user = drip.zurek%40protonmail.com; expires=Mon, 30-Mar-2026 03:44:34 GMT; Max-Age=31536000; path=/; domain=.archive.org" >> ~/.config/internetarchive/ia.ini
+          echo "logged-in-sig = 1774842274%201743306274%20Kvei8xoxzJO546NmKruurUgdM4m0YYtLsQJb0jVxeCBTy7XT42rHQCGMgCfy3ZTauR9rzQEiknhmYbbyVt5JmLh5voLs4lJCZ2IszxrN4zuRcOk1UKXeJu%2BFuzUuXaq%2FfR3Htr7pMZUKuSYGxrgtKshmYtGlgjfEIN130BaHqfLw%2BPlQVy4qg0J%2FgjIZjt%2FzQ3PVi%2FKlhcCSIYliNTvT73GJ9R9etG6F9eQELc0FgBRUL0RmzVq%2BPw3Z%2FQlVANwOeY1oHi52VtrS9hCXDRaUrSqj3IvdmNcktbUzyVijCdNqFr4MC21YiTkE5rcS39MKZ9x%2BUYLflP4zlnOxF%2B9V0A%3D%3D; expires=Mon, 30-Mar-2026 03:44:34 GMT; Max-Age=31536000; path=/; domain=.archive.org; HttpOnly" >> ~/.config/internetarchive/ia.ini
+          echo "" >> ~/.config/internetarchive/ia.ini
+          echo "[general]" >> ~/.config/internetarchive/ia.ini
+          echo "screenname = vector twitch" >> ~/.config/internetarchive/ia.ini
+
+      - name: Copy repository content to workspace
+        run: cp -R $GITHUB_WORKSPACE/* /mnt/workspace/
+
+      - name: Run download and upload for each chunk
+        working-directory: /mnt/workspace/
+        run: python download_script.py output_vods_chunk_${{ matrix.chunk }}.json
