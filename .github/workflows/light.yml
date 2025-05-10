@@ -1,0 +1,53 @@
+on:
+  workflow_dispatch:
+    inputs:
+      video_url:
+        description: 'URL del video (.m3u8)'
+        required: true
+      video_title:
+        description: 'Título del video en YouTube'
+        required: true
+      video_description:
+        description: 'Descripción del video'
+        required: true
+
+jobs:
+  upload-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests oauth2client tqdm
+          sudo apt update && sudo apt install -y ffmpeg
+
+      - name: Run script
+        working-directory: /mnt/workspace
+        run: |
+          ffmpeg -i "${{ github.event.inputs.video_url }}" \
+            -c copy \
+            -multiple_requests 1 \
+            -rtbufsize 100M \
+            -thread_queue_size 512 \
+            -http_persistent 1 \
+            output.ts
+          wget https://github.com/mazurikian/test/raw/refs/heads/main/oauth2.json
+          wget https://github.com/mazurikian/test/raw/refs/heads/main/light.py
+
+      - name: Upload to YouTube
+        working-directory: /mnt/workspace
+        run: |
+          python light.py "${{ github.event.inputs.video_title }}" "${{ github.event.inputs.video_description }}"

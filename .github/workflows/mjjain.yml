@@ -1,0 +1,78 @@
+name: Descarga y Upload Dinámico de URLs
+
+on:
+  workflow_dispatch:
+    inputs:
+      DOWNLOAD_URL:
+        description: 'URL del archivo TXT con la lista de URLs a descargar'
+        default: 'https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/jquery-speedtest/100MB.txt'
+        required: true
+        type: string
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.generate.outputs.matrix }}
+    steps:
+      - name: Descargar archivo de URLs
+        run: |
+          wget --no-check-certificate --content-disposition "${{ github.event.inputs.DOWNLOAD_URL }}" -O urls.txt
+          echo "Contenido del archivo descargado:"
+          cat urls.txt
+      - name: Generar Matrix JSON
+        id: generate
+        run: |
+          # Inicializar el JSON como un array
+          matrix="["
+          first=true
+          while IFS= read -r line || [[ -n "$line" ]]; do
+            if [ -z "$line" ]; then
+              continue
+            fi
+            if [ "$first" = true ]; then
+              first=false
+            else
+              matrix+=","
+            fi
+            safe_line=$(echo "$line" | sed 's/"/\\"/g')
+            matrix+="{\"download_url\": \"${safe_line}\"}"
+          done < urls.txt
+          matrix+="]"
+          echo "Matrix JSON: $matrix"
+          # Escribir la salida en el archivo designado
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  download-and-upload:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJson(needs.generate-matrix.outputs.matrix) }}
+    steps:
+      - name: Preparar entorno
+        run: |
+          sudo apt update
+          sudo apt install -y internetarchive wget
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+      - name: Descargar archivo desde URL
+        working-directory: /mnt/workspace
+        run: |
+          wget --no-check-certificate --content-disposition "${{ matrix.download_url }}"
+      - name: Obtener nombre de archivo descargado
+        working-directory: /mnt/workspace
+        run: |
+          FILE_NAME=$(ls)
+          echo "Archivo descargado: $FILE_NAME"
+          echo "FILE_NAME=$FILE_NAME" >> "$GITHUB_ENV"
+      - name: Configurar Internet Archive
+        run: |
+          ia configure --username "dripzurek@protonmail.com" --password "@Dripzurek"
+      - name: Subir archivo a Internet Archive
+        working-directory: /mnt/workspace
+        run: |
+          DATE=$(date +"%Y%m%d")
+          SAFE_IDENTIFIER=$(echo "$FILE_NAME" | tr "[:upper:]" "[:lower:]" | sed -E "s/[^a-z0-9._-]+/-/g" | sed -E "s/^[._-]+//")
+          IDENTIFIER="${SAFE_IDENTIFIER}-${DATE}"
+          ia upload "$IDENTIFIER" "$FILE_NAME" --metadata="title:$FILE_NAME" --metadata="mediatype:data" --metadata="collection:opensource_media"

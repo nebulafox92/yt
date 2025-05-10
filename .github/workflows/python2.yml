@@ -1,0 +1,22 @@
+name: Run Python2 Script
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-python2:
+    runs-on: ubuntu-latest
+    container: python:2.7.18  # Usa una imagen con Python 2
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Descarga el código del repo
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --no-cache-dir google-api-python-client oauth2client httplib2
+
+      - name: Run script
+        run: |
+          python script.py --file=video.mp4  # Asegúrate de tener el archivo de video
