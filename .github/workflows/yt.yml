@@ -40,7 +40,7 @@ jobs:
         working-directory: /mnt/workspace
         run: |
           # Definir la URL base del stream
-          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/4/18/17/17/nghh0zneIY34/media/hls/1080p60/"
+          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/5/6/15/35/BqGideY5zC6m/media/hls/1080p60/"
           
           # Descargar el playlist principal
           wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
