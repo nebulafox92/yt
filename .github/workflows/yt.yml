@@ -32,8 +32,8 @@ jobs:
       - name: Download authentication files
         working-directory: /mnt/workspace
         run: |
-          wget https://github.com/mazurikian/test/raw/refs/heads/main/oauth2.json
-          wget https://github.com/mazurikian/test/raw/refs/heads/main/script.py
+          wget https://github.com/LunarStorm97/yt/raw/refs/heads/main/oauth2.json
+          wget https://github.com/LunarStorm97/yt/raw/refs/heads/main/script.py
         #  wget https://github.com/mazurikian/test/raw/refs/heads/main/client_secret.json
 
       - name: Download and process segments with absolute URLs
