@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "MAÑANA PELICULA CON LOS SUBS DE KICK + YT 🎥🍿  - !duelbits !kingslv !crew - META SUBS: 99/110 https://kick.com/vector/videos/3d8e0881-0ce2-42f1-b9c3-d3a11686c309",
+                    "description": "REACCIONAMOS AL TRAILER DE GTA VI GOGOGOO - !1win !kingslv !crew - META SUBS: 94/100 https://kick.com/vector/videos/e91b3820-74e5-4d20-b7f5-64a8e25303a9",
                     "categoryId": "22"
                 },
                 "status": {
