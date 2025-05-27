@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "REACCIONAMOS AL TRAILER DE GTA VI GOGOGOO - !1win !kingslv !crew - META SUBS: 94/100 https://kick.com/vector/videos/e91b3820-74e5-4d20-b7f5-64a8e25303a9",
+                    "description": "HOY VICIAMOS DIA DE SUPERVIVENCIA... DAYZ ALL DAY - !spinarium !clash !kingslv !crew - META SUBS: 112/120 https://kick.com/vector/videos/7bcd19f6-0fa6-4d44-8c60-ad2237fdcd4c",
                     "categoryId": "22"
                 },
                 "status": {
