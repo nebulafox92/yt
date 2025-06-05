@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "POST PARTIDO DEL TIBURON RALIL 🦈 - !shuffle !clash !kingslv !crew - META SUBS: 101/110 https://kick.com/vector/videos/faa9314b-f932-4f54-8159-66feeeff13da",
+                    "description": "LA FINAL DEL TIBUROOOOONNNN 🦈 🦈 🦈 - !shuffle !clash !kingslv !crew - META SUBS: 151/160 https://kick.com/vector/videos/71eeb308-d38e-4cce-a86d-039eb667babc",
                     "categoryId": "22"
                 },
                 "status": {
