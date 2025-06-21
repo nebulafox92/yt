@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "LA FINAL DEL TIBUROOOOONNNN 🦈 🦈 🦈 - !shuffle !clash !kingslv !crew - META SUBS: 151/160 https://kick.com/vector/videos/71eeb308-d38e-4cce-a86d-039eb667babc",
+                    "description": "TENGO GANAS DE JUGARRRRRRR, HOY VARIEDAD PURISIMA Y DURISIMA 🤪 🤪 🤪 🤪  - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/646f5ffd-d040-4243-a0db-f509b1b5da6d",
                     "categoryId": "22"
                 },
                 "status": {
