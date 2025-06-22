@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "TENGO GANAS DE JUGARRRRRRR, HOY VARIEDAD PURISIMA Y DURISIMA 🤪 🤪 🤪 🤪  - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/646f5ffd-d040-4243-a0db-f509b1b5da6d",
+                    "description": "HOY NUEVO FNAF: Secret of the mimic + PS2 Y mucho mas!!! #COPAFALLGUYS by Greengaming_tv - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/6435287b-db8e-417a-8b84-c25658a00ddf",
                     "categoryId": "22"
                 },
                 "status": {
