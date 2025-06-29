@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY NUEVO FNAF: Secret of the mimic + PS2 Y mucho mas!!! #COPAFALLGUYS by Greengaming_tv - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/6435287b-db8e-417a-8b84-c25658a00ddf",
+                    "description": "HOY JUEGO DE PS2 COOP CON ROMMEL Y FINAL DEL TORNEO DE STREAMERS 🏆 - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/1bcf6637-0135-4b6d-a367-3a8008184745",
                     "categoryId": "22"
                 },
                 "status": {
