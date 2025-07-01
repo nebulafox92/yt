@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY JUEGO DE PS2 COOP CON ROMMEL Y FINAL DEL TORNEO DE STREAMERS 🏆 - !megapari !kingslv !crew - META SUBS: 134/150 https://kick.com/vector/videos/1bcf6637-0135-4b6d-a367-3a8008184745",
+                    "description": "HOY PIRATAS DEL CARIBE COOP CON RMOMMEL ☠️🏴 - !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/081fbecc-754e-4cd9-8cf8-f872d0d52298",
                     "categoryId": "22"
                 },
                 "status": {
