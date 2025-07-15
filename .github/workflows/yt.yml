@@ -40,7 +40,7 @@ jobs:
         working-directory: /mnt/workspace
         run: |
           # Definir la URL base del stream
-          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/6/17/16/8/rI3iGtWv3hYK/media/hls/1080p60/"
+          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/6/24/17/19/JQB2Ht2mFkuk/media/hls/1080p60/"
           
           # Descargar el playlist principal
           wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
@@ -73,7 +73,7 @@ jobs:
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
           
           echo "Uploading first part..."
-          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 17/06/2025 | 1/2"
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 24/06/2025 | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
           
           # Procesar segunda parte
@@ -84,5 +84,5 @@ jobs:
           sleep 3600
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 17/06/2025 | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 24/06/2025 | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
