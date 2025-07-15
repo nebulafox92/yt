@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY PIRATAS DEL CARIBE COOP CON RMOMMEL ☠️🏴 - !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/081fbecc-754e-4cd9-8cf8-f872d0d52298",
+                    "description": "HOY ESTRENO MUNDIAL DE DEATH STRANDING 2, Y MUCHAS COSAS MAS!!! 🌍 - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/320b97af-6271-490e-a4ea-839cf7c583e1",
                     "categoryId": "22"
                 },
                 "status": {
