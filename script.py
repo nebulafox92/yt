@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY ESTRENO MUNDIAL DE DEATH STRANDING 2, Y MUCHAS COSAS MAS!!! 🌍 - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/320b97af-6271-490e-a4ea-839cf7c583e1",
+                    "description": "DEATH STRANGIN 2 A PLENO Y CAPAZ NUEVO JUEGO COOP, HOY QUIERO ROBAR CASAS 🏠🏠 - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/c5c50fa0-30bc-427a-a4c4-754e3e3dc987",
                     "categoryId": "22"
                 },
                 "status": {
