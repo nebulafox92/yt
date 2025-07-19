@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DEATH STRANGIN 2 A PLENO Y CAPAZ NUEVO JUEGO COOP, HOY QUIERO ROBAR CASAS 🏠🏠 - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/c5c50fa0-30bc-427a-a4c4-754e3e3dc987",
+                    "description": "HOY NOCHE DE CHUPISTREAM - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/3f0cb569-a414-4e78-bf56-a9ba577d79a7",
                     "categoryId": "22"
                 },
                 "status": {
