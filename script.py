@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY NOCHE DE CHUPISTREAM - !r1skins !melbet !kingslv !crew - META SUBS: 136/150 https://kick.com/vector/videos/3f0cb569-a414-4e78-bf56-a9ba577d79a7",
+                    "description": "HOY DBD, GANAMOS EL GOTY STRANDING 2🔥 Y MAS - !r1skins !melbet !kingslv !crew - META SUBS: 90/100 https://kick.com/vector/videos/7ca20096-c7a2-4266-b413-14634ee1c05b",
                     "categoryId": "22"
                 },
                 "status": {
