@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY DBD, GANAMOS EL GOTY STRANDING 2🔥 Y MAS - !r1skins !melbet !kingslv !crew - META SUBS: 90/100 https://kick.com/vector/videos/7ca20096-c7a2-4266-b413-14634ee1c05b",
+                    "description": "LA CABRA DEL STREAM DE VARIEDAD ESTA ON!!!!! 🔥🔥🔥 - !r1skins !melbet !kingslv !crew - META SUBS: 90/100 https://kick.com/vector/videos/ac8269cc-e527-4638-b6d5-d1dfc1fa1ad3",
                     "categoryId": "22"
                 },
                 "status": {
