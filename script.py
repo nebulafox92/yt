@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "FUTURA PROMESA EN LAS LIGAS DE DEAD BY DAYLIGHT ESTA ON - !r1skins !melbet !kingslv !crew - META SUBS: 90/100 https://kick.com/vector/videos/4fa76272-74b1-4be2-8f1e-a3e058682cbd",
+                    "description": "UN DIA MAS... QUE PRENDO STREAM SIENDO YO OAAAAA 😎 - !r1skins !melbet !kingslv !crew - META SUBS: 88/100 https://kick.com/vector/videos/b26e66ed-2aa5-4f9a-8630-a3136e3e1d11",
                     "categoryId": "22"
                 },
                 "status": {
