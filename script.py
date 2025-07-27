@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "LA MALDITA CABRA DEL GAMING ESTA ACA!!!! (A nada de los 100 subs) 🔥 - !r1skins !kingslv !crew - META SUBS: 94/100 https://kick.com/vector/videos/1817f127-68e5-4b21-9d50-2daeacc975a6",
+                    "description": "SABADO CON EL MEJOR STREAM!!! 🔥 - !r1skins !kingslv !crew - META SUBS: 94/100 https://kick.com/vector/videos/eb3701d9-e3c5-4453-b9b6-b782d5cabc61",
                     "categoryId": "22"
                 },
                 "status": {
