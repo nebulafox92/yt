@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "UN DIA MAS... QUE PRENDO STREAM SIENDO YO OAAAAA 😎 - !r1skins !melbet !kingslv !crew - META SUBS: 88/100 https://kick.com/vector/videos/b26e66ed-2aa5-4f9a-8630-a3136e3e1d11",
+                    "description": "LA MALDITA CABRA DEL GAMING ESTA ACA!!!! (A nada de los 100 subs) 🔥 - !r1skins !kingslv !crew - META SUBS: 94/100 https://kick.com/vector/videos/1817f127-68e5-4b21-9d50-2daeacc975a6",
                     "categoryId": "22"
                 },
                 "status": {
