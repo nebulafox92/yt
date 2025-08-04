@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "https://kick.com/vector/videos/26eeb8cd-292b-419c-a698-0bdf93d140a7 DOMINGO A FULL LOCOOOO!! EL DBD E LA KE VA LOKOOOO - !r1skins !kingslv !crew - META SUBS: 94/100",
+                    "description": "DISFRUTA ESTE STREAM HASTA EL SABADO!!!! 😞 - !r1skins !kingslv !crew - META SUBS: 92/100 https://kick.com/vector/videos/c8a22db2-5a5a-4920-8b7e-fa1cc734d179",
                     "categoryId": "22"
                 },
                 "status": {
