@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DIA DE ENTRETENIMIENTO DE CALIDAD ACA... DONDE MAS SI NO? 😎 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 97/100 https://kick.com/vector/videos/ebd819c1-d619-4e74-a777-439103504efb",
+                    "description": "VENDIENDO BOCINAS DE CALIDAD PREMIUM ACA 📢🔊 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/a20d8c9a-47e0-460f-8783-f2f6125cc420",
                     "categoryId": "22"
                 },
                 "status": {
