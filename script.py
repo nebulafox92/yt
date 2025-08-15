@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "VENDIENDO BOCINAS DE CALIDAD PREMIUM ACA 📢🔊 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/a20d8c9a-47e0-460f-8783-f2f6125cc420",
+                    "description": "HOY LE MANDAMOS MECHA TODO EL DIA BIEN HASTA LA MADRUGADA!! 🌅 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/0572fa55-076b-4950-86be-0ec75e623132",
                     "categoryId": "22"
                 },
                 "status": {
