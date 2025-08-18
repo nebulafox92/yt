@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "PINCHO LOQUETEE!! ASI QUE DEJA LA VIEW EN KICKETEEEE 😡😡😡 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/8c740ee5-14f5-4317-b620-765106cae79b",
+                    "description": "HOY NOCHE DE TERROR EXTREMO EN CHINA!!! Buenas panflines ❤️ - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/a3a0c109-d72f-4fa4-9c96-4dc3ca187978",
                     "categoryId": "22"
                 },
                 "status": {
