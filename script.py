@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY LE MANDAMOS MECHA TODO EL DIA BIEN HASTA LA MADRUGADA!! 🌅 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/0572fa55-076b-4950-86be-0ec75e623132",
+                    "description": "PINCHO LOQUETEE!! ASI QUE DEJA LA VIEW EN KICKETEEEE 😡😡😡 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/8c740ee5-14f5-4317-b620-765106cae79b",
                     "categoryId": "22"
                 },
                 "status": {
