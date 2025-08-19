@@ -40,7 +40,7 @@ jobs:
         working-directory: /mnt/workspace
         run: |
           # Definir la URL base del stream
-          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/7/20/17/15/doVrmSuGv1zW/media/hls/1080p60/"
+          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/7/21/16/35/OBsiqmXHVGOM/media/hls/1080p60/"
           
           # Descargar el playlist principal
           wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
@@ -72,17 +72,17 @@ jobs:
           echo "Downloading and concatenating first part..."
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
           
-          #echo "Uploading first part..."
-          #python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 20/07/2025 | 1/2"
-          #rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
+          echo "Uploading first part..."
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 21/07/2025 | 1/2"
+          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
           
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
 
-          #echo "Shutfuckup, wait..."
-          #sleep 7200
+          echo "Shutfuckup, wait..."
+          sleep 7200
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 20/07/2025 | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 21/07/2025 | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
