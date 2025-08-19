@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY NOCHE DE TERROR EXTREMO EN CHINA!!! Buenas panflines ❤️ - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 103/125 https://kick.com/vector/videos/a3a0c109-d72f-4fa4-9c96-4dc3ca187978",
+                    "description": "HOY NUEVA SERIE SURVIVAL CON LOSPI Y MUCHAS COSAS MAS!!!! ❤️ - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/78f00433-a016-44d1-9b64-56213ca4ef92",
                     "categoryId": "22"
                 },
                 "status": {
