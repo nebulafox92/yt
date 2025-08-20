@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY NUEVA SERIE SURVIVAL CON LOSPI Y MUCHAS COSAS MAS!!!! ❤️ - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/78f00433-a016-44d1-9b64-56213ca4ef92",
+                    "description": "DESCUENTO EN CONTENIDO PREMIUM ACA!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/9333fbaf-19ac-4c87-89d0-986b5e73324f",
                     "categoryId": "22"
                 },
                 "status": {
