@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DESCUENTO EN CONTENIDO PREMIUM ACA!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/9333fbaf-19ac-4c87-89d0-986b5e73324f",
+                    "description": "HOY DE TODOOOOOOOOO - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/453c0228-50a5-4cad-a805-68cb73c50f01",
                     "categoryId": "22"
                 },
                 "status": {
