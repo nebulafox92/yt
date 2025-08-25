@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY JUEGUITO NUEVO???? SE VICEA COMO SIEMPREEEE - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/e8ff3ea7-be47-4c48-ada9-dd15ecab55e7",
+                    "description": "PREVIA A LA COLABO MAS EPICA DE LA HISTORIA!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/b0d17c9b-63d1-446f-ae72-c39d2cf1f0e9",
                     "categoryId": "22"
                 },
                 "status": {
