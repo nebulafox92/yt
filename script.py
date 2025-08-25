@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "VICIO ALL DAY ALL NIGHT!!!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 135/150 https://kick.com/vector/videos/99384288-eecb-46e1-b505-a10f4623facf",
+                    "description": "HOY JUEGUITO NUEVO???? SE VICEA COMO SIEMPREEEE - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/e8ff3ea7-be47-4c48-ada9-dd15ecab55e7",
                     "categoryId": "22"
                 },
                 "status": {
