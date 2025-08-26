@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "PREVIA A LA COLABO MAS EPICA DE LA HISTORIA!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/b0d17c9b-63d1-446f-ae72-c39d2cf1f0e9",
+                    "description": "THE WALKING DEAD EN DBD???? PRIMERAS IMPRESIONES - NOCHE DE ROBO A JUBILADOS!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/04e633a7-c919-459f-b55f-b3db23672bc6",
                     "categoryId": "22"
                 },
                 "status": {
