@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "THE WALKING DEAD EN DBD???? PRIMERAS IMPRESIONES - NOCHE DE ROBO A JUBILADOS!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/04e633a7-c919-459f-b55f-b3db23672bc6",
+                    "description": "NOCHE DE ASALTO A JUBILADAS Y CAPAZ ESCALANDO EN PEAK O LO QUE SEA!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/6ca08c6b-dbd8-4ab6-9b64-62e2ddcfc67c",
                     "categoryId": "22"
                 },
                 "status": {
