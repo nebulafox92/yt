@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "NOCHE DE ASALTO A JUBILADAS Y CAPAZ ESCALANDO EN PEAK O LO QUE SEA!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/6ca08c6b-dbd8-4ab6-9b64-62e2ddcfc67c",
+                    "description": "MAÑANA STREAM ESPECIAL CON FARFA 😎 HOY VICIO A FULL!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/2a7b728d-1cd4-4cf5-b4ce-8be298c2cbd6",
                     "categoryId": "22"
                 },
                 "status": {
