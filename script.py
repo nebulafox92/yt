@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "MAÑANA STREAM ESPECIAL CON FARFA 😎 HOY VICIO A FULL!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/2a7b728d-1cd4-4cf5-b4ce-8be298c2cbd6",
+                    "description": "HOY REENCUENTRO CON FARFADOXOFICIAL 🔥🔥🔥 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/d4f09c33-9592-420e-a6d1-cf6646f97664",
                     "categoryId": "22"
                 },
                 "status": {
