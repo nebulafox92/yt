@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY REENCUENTRO CON FARFADOXOFICIAL 🔥🔥🔥 - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/d4f09c33-9592-420e-a6d1-cf6646f97664",
+                    "description": "STREAM TODO EL DIA, CALIDAD PREMIUM A FULL!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 139/150 https://kick.com/vector/videos/e6597e12-b411-4707-b1ea-ea7226906f1d",
                     "categoryId": "22"
                 },
                 "status": {
