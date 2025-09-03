@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "STREAM TODO EL DIA, CALIDAD PREMIUM A FULL!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 139/150 https://kick.com/vector/videos/e6597e12-b411-4707-b1ea-ea7226906f1d",
+                    "description": "STREAM TODO EL DIA ACAAAAAAAAAAAA!!!!!! - !betbox !1xbet !r1skins !kingslv !crew - META SUBS: 139/150 https://kick.com/vector/videos/31772784-a8d9-449d-b7ad-bec0329793dd",
                     "categoryId": "22"
                 },
                 "status": {
