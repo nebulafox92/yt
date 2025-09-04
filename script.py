@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY SE PICA HARDCORE Z CON TODO!!! - !1win !r1skins !kingslv !crew - META SUBS: 153/170 https://kick.com/vector/videos/c9c79cbc-08af-49df-88c4-5f73919e1ce5",
+                    "description": "HOY SE PICA HARDCORE Z CON TODO!!! - !1win !r1skins !kingslv !crew - META SUBS: 153/170 https://kick.com/vector/videos/acfebce5-d6b0-4f9a-aa21-7ca78a6ede84",
                     "categoryId": "22"
                 },
                 "status": {
