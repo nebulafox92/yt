@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY HARDCORE Z DIA 2!!! SE PICA??? - !1win !r1skins !kingslv !crew - META SUBS: 160/170 https://kick.com/vector/videos/622aee21-aec5-4bc7-bab8-a42366cb7dfb",
+                    "description": "ULTIMO DIA EN HARDCORE Z, HOY SE PONE PICANTE!!!! - !1win !r1skins !kingslv !crew - META SUBS: 163/170 https://kick.com/vector/videos/7baa153b-5c18-4fc1-affc-ce77cc78fb75",
                     "categoryId": "22"
                 },
                 "status": {
