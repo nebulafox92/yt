@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "ULTIMO DIA EN HARDCORE Z, HOY SE PONE PICANTE!!!! - !1win !r1skins !kingslv !crew - META SUBS: 163/170 https://kick.com/vector/videos/7baa153b-5c18-4fc1-affc-ce77cc78fb75",
+                    "description": "HOY MINECRAFT DUUUUURO CON LOS PIBES!!! Entre muchas otras cosas eh jijodejuja - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/05e39849-a509-46a8-8ed3-3fa2cf429b1e",
                     "categoryId": "22"
                 },
                 "status": {
