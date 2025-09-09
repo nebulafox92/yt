@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY MINECRAFT DUUUUURO CON LOS PIBES!!! Entre muchas otras cosas eh jijodejuja - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/05e39849-a509-46a8-8ed3-3fa2cf429b1e",
+                    "description": "DIA DE LLUVIA Y VICIO ENFERMIZO 🤪🤪🤪 - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/7ec88c16-3c31-44ce-8808-a6b673337c7a",
                     "categoryId": "22"
                 },
                 "status": {
