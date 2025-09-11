@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DIA DE LLUVIA Y VICIO ENFERMIZO 🤪🤪🤪 - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/7ec88c16-3c31-44ce-8808-a6b673337c7a",
+                    "description": "STREAM DE CHIGGA TODO EL DIA!!!!!!!!! - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/1639698e-3dff-4350-a6f4-b77f88685273",
                     "categoryId": "22"
                 },
                 "status": {
