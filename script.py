@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "STREAM DE CHIGGA TODO EL DIA!!!!!!!!! - !1win !r1skins !kingslv !crew - META SUBS: 175/200 https://kick.com/vector/videos/1639698e-3dff-4350-a6f4-b77f88685273",
+                    "description": "DIA DE VICIO A FULL!!!! - !1win !r1skins !kingslv !crew - META SUBS: 171/200 https://kick.com/vector/videos/1c27510b-74e8-459a-b6bc-02eb48ab8477",
                     "categoryId": "22"
                 },
                 "status": {
