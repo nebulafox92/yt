@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DIA DE VICIO A FULL!!!! - !1win !r1skins !kingslv !crew - META SUBS: 171/200 https://kick.com/vector/videos/1c27510b-74e8-459a-b6bc-02eb48ab8477",
+                    "description": "DOMINGO MINECRAFTEANO!!! 🟫🟩- !1win !r1skins !kingslv !crew - META SUBS: 170/200 https://kick.com/vector/videos/091dc945-cf42-4cd1-98f4-45a72f8c99b7",
                     "categoryId": "22"
                 },
                 "status": {
