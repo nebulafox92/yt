@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "DOMINGO MINECRAFTEANO!!! 🟫🟩- !1win !r1skins !kingslv !crew - META SUBS: 170/200 https://kick.com/vector/videos/091dc945-cf42-4cd1-98f4-45a72f8c99b7",
+                    "description": "Recien me despierto wn 💤💤- !1win !r1skins !kingslv !crew - META SUBS: 168/200 https://kick.com/vector/videos/b2d262e6-3f21-4db0-b6bd-a36e0c26cd55",
                     "categoryId": "22"
                 },
                 "status": {
