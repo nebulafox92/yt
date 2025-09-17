@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "Recien me despierto wn 💤💤- !1win !r1skins !kingslv !crew - META SUBS: 168/200 https://kick.com/vector/videos/b2d262e6-3f21-4db0-b6bd-a36e0c26cd55",
+                    "description": "A VICIAR MINECRAFT!! HABLANDO DE PROYECTOS Y MAS! - !betbox !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/92fb1ec2-7ff4-40b9-86e4-3677a86d121a",
                     "categoryId": "22"
                 },
                 "status": {
