@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "A VICIAR MINECRAFT!! HABLANDO DE PROYECTOS Y MAS! - !betbox !r1skins !kingslv !crew - META SUBS: 141/150 https://kick.com/vector/videos/92fb1ec2-7ff4-40b9-86e4-3677a86d121a",
+                    "description": "DOMINGO DE VICIO Y EVENTO EN MINECRAFT!!! - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/6fa81441-8d2d-4670-953f-2aebe1044d23",
                     "categoryId": "22"
                 },
                 "status": {
