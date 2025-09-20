@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY SEGUIMOS ARMANDO NUESTRA CASITA EN MAINKRA!!! - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/960470dc-048f-4343-bb92-514ee1efc3cc",
+                    "description": "HOY EVENTO DE FARFADOXOFICIAL EN MINECRAFT / MAÑANA PROYECTO K!!! - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/72a7f919-a34c-4fbe-83a5-4b5dc4ebbf71",
                     "categoryId": "22"
                 },
                 "status": {
