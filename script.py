@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY EVENTO DE FARFADOXOFICIAL EN MINECRAFT / MAÑANA PROYECTO K!!! - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/72a7f919-a34c-4fbe-83a5-4b5dc4ebbf71",
+                    "description": "HOY TERMINO MI CASITA EN MINECRAFT, VENI A ESTRENAR ❤️ - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/65e75ba6-a861-41bb-ae36-a4960363da13",
                     "categoryId": "22"
                 },
                 "status": {
