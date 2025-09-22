@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY TERMINO MI CASITA EN MINECRAFT, VENI A ESTRENAR ❤️ - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/65e75ba6-a861-41bb-ae36-a4960363da13",
+                    "description": "FELICIDAD PURA CON MI NUEVA RELACION 🥰😍 - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/362bffeb-8b75-450d-825b-de5925d9bb8d",
                     "categoryId": "22"
                 },
                 "status": {
