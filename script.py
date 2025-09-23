@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "FELICIDAD PURA CON MI NUEVA RELACION 🥰😍 - !betbox !r1skins !kingslv !crew - META SUBS: 140/150 https://kick.com/vector/videos/362bffeb-8b75-450d-825b-de5925d9bb8d",
+                    "description": "HOY VIERNES!!! SE VICEA A FULL / MAÑANA PANCHISTREAM CON LOSPIBE 🌭🌭🌭 - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/b9a3690d-179a-4711-8804-a480e7aedd09",
                     "categoryId": "22"
                 },
                 "status": {
