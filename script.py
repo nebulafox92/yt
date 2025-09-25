@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY VIERNES!!! SE VICEA A FULL / MAÑANA PANCHISTREAM CON LOSPIBE 🌭🌭🌭 - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/b9a3690d-179a-4711-8804-a480e7aedd09",
+                    "description": "HOY NOCHE DE DISCORD Y PANCHOS CON LOS PIBES!!!!!🌭🌭🌭 - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/182e6a5a-4984-4e32-8781-d69f93de182e",
                     "categoryId": "22"
                 },
                 "status": {
