@@ -31,7 +31,7 @@ def upload_video(file_path, title):
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY NOCHE DE DISCORD Y PANCHOS CON LOS PIBES!!!!!🌭🌭🌭 - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/182e6a5a-4984-4e32-8781-d69f93de182e",
+                    "description": "HOY DOMINGO DE VICIO Y VIDEITOS... TOCA HACER NUKETOWN EN MINECRAFT ⭐ - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/ec49afd5-3713-4042-9393-39c8623bb30d",
                     "categoryId": "22"
                 },
                 "status": {
