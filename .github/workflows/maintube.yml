@@ -4,17 +4,17 @@ on:
   workflow_dispatch:
     inputs:
       stream_url:
-        description: 'Base URL del stream HLS (termina con /)'
+        description: 'Base URL del stream HLS (termina con /1080p60/)'
         required: true
-        default: 'https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/31/16/6/HL3QmP6Wfsva/media/hls/1080p60/'
+        default: ''
       video_title:
-        description: 'Título opcional para el video en YouTube (si no se indica, se genera automáticamente)'
+        description: 'Título opcional'
         required: false
         default: ''
       video_description:
-        description: 'Descripción opcional para el video en YouTube'
-        required: false
-        default: 'Subido automáticamente desde el stream de Vector.'
+        description: 'Descripción'
+        required: true
+        default: ''
 
 jobs:
   upload-video:
