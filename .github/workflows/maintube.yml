@@ -71,9 +71,9 @@ jobs:
           print(f'First part segments: {split_point}')
           print(f'Second part segments: {total - split_point}')
           with open('segments_absolute_part1.txt', 'w') as f:
-          f.write('\n'.join(segments[:split_point]))
+             f.write('\n'.join(segments[:split_point]))
           with open('segments_absolute_part2.txt', 'w') as f:
-          f.write('\n'.join(segments[split_point:]))
+             f.write('\n'.join(segments[split_point:]))
           "
 
           # Procesar primera parte
