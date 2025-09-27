@@ -65,12 +65,12 @@ jobs:
         run: |
           wget --user-agent="Mozilla/5.0" "$BEST_M3U8" -O master.m3u8
           python - <<EOF
-import m3u8
-playlist = m3u8.load('master.m3u8')
-total_duration = sum(seg.duration for seg in playlist.segments)
-with open('duration.txt', 'w') as f:
-    f.write(str(int(total_duration)))
-EOF
+          import m3u8
+          playlist = m3u8.load('master.m3u8')
+          total_duration = sum(seg.duration for seg in playlist.segments)
+          with open('duration.txt', 'w') as f:
+             f.write(str(int(total_duration)))
+          EOF
           DURATION=$(cat duration.txt)
           echo "DURATION=$DURATION" >> $GITHUB_ENV
 
@@ -101,18 +101,18 @@ EOF
             python script.py --file /mnt/workspace/temp_parts/full.ts --title "$VIDEO_TITLE" --description "$VIDEO_DESCRIPTION"
             rm /mnt/workspace/temp_parts/full.ts
           else
-            # Dividir en dos partes
-            python - <<EOF
-import m3u8
-base_url = "$STREAM_BASE_URL"
-playlist = m3u8.load('master.m3u8')
-segments = [base_url + seg.uri for seg in playlist.segments]
-split_point = len(segments) // 2 + len(segments) % 2
-with open('segments_part1.txt', 'w') as f:
-    f.write('\n'.join(segments[:split_point]))
-with open('segments_part2.txt', 'w') as f:
-    f.write('\n'.join(segments[split_point:]))
-EOF
+           # Dividir en dos partes
+           python - <<EOF
+           import m3u8
+           base_url = "$STREAM_BASE_URL"
+           playlist = m3u8.load('master.m3u8')
+           segments = [base_url + seg.uri for seg in playlist.segments]
+           split_point = len(segments) // 2 + len(segments) % 2
+           with open('segments_part1.txt', 'w') as f:
+               f.write('\n'.join(segments[:split_point]))
+           with open('segments_part2.txt', 'w') as f:
+               f.write('\n'.join(segments[split_point:]))
+            EOF
             # Parte 1
             ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
               -i <(for f in $(cat segments_part1.txt); do echo "file '$f'"; done) \
