@@ -82,7 +82,7 @@ jobs:
             -c copy -y /mnt/workspace/temp_parts/part1.ts
 
           echo "Uploading first part..."
-          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "$VIDEO_TITLE | 1/2"
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
 
           # Procesar segunda parte
@@ -95,5 +95,5 @@ jobs:
           sleep 7200
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "$VIDEO_TITLE | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
