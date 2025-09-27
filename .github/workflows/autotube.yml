@@ -1,0 +1,179 @@
+name: Upload Video to YouTube (Auto)
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'  # cada 6 horas
+  workflow_dispatch:  # ejecutar manualmente si se quiere
+
+jobs:
+  upload-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+          mkdir -p /mnt/workspace/temp_parts
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests oauth2client tqdm m3u8
+          sudo apt update
+          sudo apt install -y ffmpeg wget jq
+
+      # ================================
+      # 1. Obtener automáticamente BEST_M3U8
+      # ================================
+      - name: Get latest M3U8 URL from Kick
+        id: get_url
+        run: |
+          API_URL="https://kick.com/api/v2/channels/vector/videos"
+          JSON=$(curl -s -A "Mozilla/5.0" "$API_URL")
+          
+          UUID=$(echo "$JSON" | jq -r '.[0].video.uuid')
+          SOURCE=$(echo "$JSON" | jq -r '.[0].source')
+          CREATED_AT=$(echo "$JSON" | jq -r '.[0].created_at')
+          SESSION_TITLE=$(echo "$JSON" | jq -r '.[0].session_title')
+
+          BASE="${SOURCE%/*}"
+          SEGMENT=$(curl -s -A "Mozilla/5.0" "$SOURCE" | awk '!/^#/ {print; exit}')
+          BEST_M3U8="$BASE/$SEGMENT"
+
+          echo "UUID=$UUID" >> $GITHUB_ENV
+          echo "BEST_M3U8=$BEST_M3U8" >> $GITHUB_ENV
+          echo "CREATED_AT=$CREATED_AT" >> $GITHUB_ENV
+          echo "SESSION_TITLE=$SESSION_TITLE" >> $GITHUB_ENV
+
+      # ================================
+      # 2. Evitar duplicados
+      # ================================
+      - name: Check if video was already uploaded
+        run: |
+          if [ -f last_uploaded.txt ] && grep -q "$UUID" last_uploaded.txt; then
+            echo "Ya se subió este video ($UUID). Saliendo..."
+            exit 0
+          fi
+          echo "$UUID" > last_uploaded.txt
+
+      # ================================
+      # 3. Determinar duración total
+      # ================================
+      - name: Calculate duration of the stream
+        id: duration
+        working-directory: /mnt/workspace
+        run: |
+          wget --user-agent="Mozilla/5.0" "$BEST_M3U8" -O master.m3u8
+          
+          python - <<EOF
+          import m3u8
+          playlist = m3u8.load('master.m3u8')
+          total_duration = sum(seg.duration for seg in playlist.segments)
+          with open('duration.txt', 'w') as f:
+              f.write(str(int(total_duration)))
+          EOF
+          
+          DURATION=$(cat duration.txt)
+          echo "DURATION=$DURATION" >> $GITHUB_ENV
+
+      # ================================
+      # 4. Descargar script y credenciales
+      # ================================
+      - name: Download authentication and script
+        working-directory: /mnt/workspace
+        run: |
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
+
+      # ================================
+      # 5. Procesar según duración
+      # ================================
+      - name: Process and Upload
+        working-directory: /mnt/workspace
+        run: |
+          STREAM_BASE_URL="${BEST_M3U8%/*}/"
+          TITLE_DATE=$(date -d "$CREATED_AT" +"%d/%m/%Y")
+          VIDEO_URL="https://kick.com/vector/videos/$UUID"
+          VIDEO_TITLE="Vector | $TITLE_DATE"
+
+          # Descripción: siempre session_title + URL del VOD
+          if [ "$SESSION_TITLE" = "null" ] || [ -z "$SESSION_TITLE" ]; then
+            VIDEO_DESCRIPTION="$VIDEO_URL"
+          else
+            VIDEO_DESCRIPTION="$SESSION_TITLE"$'\n'"$VIDEO_URL"
+          fi
+          
+          echo "Final title: $VIDEO_TITLE"
+          echo "Final description: $VIDEO_DESCRIPTION"
+          echo "Stream base URL: $STREAM_BASE_URL"
+          echo "Total duration: $DURATION seconds"
+
+          # ===========================
+          # Video ≤ 12 horas
+          # ===========================
+          if [ "$DURATION" -le 43200 ]; then
+            echo "Video <= 12 horas, subiendo completo..."
+            ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+              -i <(curl -s "$STREAM_BASE_URL"playlist.m3u8 | awk '!/^#/ {print "file \x27"STREAM_BASE_URL $0"\x27"}' STREAM_BASE_URL="$STREAM_BASE_URL") \
+              -c copy -y /mnt/workspace/temp_parts/full.ts
+
+            python script.py --file /mnt/workspace/temp_parts/full.ts \
+              --title "$VIDEO_TITLE" \
+              --description "$VIDEO_DESCRIPTION"
+
+            rm /mnt/workspace/temp_parts/full.ts
+
+          # ===========================
+          # Video > 12 horas: dividir en 2 partes
+          # ===========================
+          else
+            echo "Video > 12 horas, dividiendo en 2 partes..."
+            
+            python - <<EOF
+            import m3u8
+            base_url = "$STREAM_BASE_URL"
+            playlist = m3u8.load('master.m3u8')
+            segments = [base_url + seg.uri for seg in playlist.segments]
+            split_point = len(segments) // 2 + len(segments) % 2
+            with open('segments_part1.txt', 'w') as f:
+                f.write('\n'.join(segments[:split_point]))
+            with open('segments_part2.txt', 'w') as f:
+                f.write('\n'.join(segments[split_point:]))
+            EOF
+
+            # Primera parte
+            ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+              -i <(for f in $(cat segments_part1.txt); do echo "file '$f'"; done) \
+              -c copy -y /mnt/workspace/temp_parts/part1.ts
+
+            python script.py --file /mnt/workspace/temp_parts/part1.ts \
+              --title "$VIDEO_TITLE | 1/2" \
+              --description "$VIDEO_DESCRIPTION"
+
+            rm /mnt/workspace/temp_parts/part1.ts segments_part1.txt
+
+            echo "Esperando 2 horas antes de subir la segunda parte..."
+            sleep 7200
+
+            # Segunda parte
+            ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+              -i <(for f in $(cat segments_part2.txt); do echo "file '$f'"; done) \
+              -c copy -y /mnt/workspace/temp_parts/part2.ts
+
+            python script.py --file /mnt/workspace/temp_parts/part2.ts \
+              --title "$VIDEO_TITLE | 2/2" \
+              --description "$VIDEO_DESCRIPTION"
+
+            rm /mnt/workspace/temp_parts/part2.ts segments_part2.txt
+          fi
+
+          # Limpiar archivos
+          rm master.m3u8
