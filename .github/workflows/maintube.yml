@@ -50,6 +50,8 @@ jobs:
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
           DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-6)}')
 
+          VIDEO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
+
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
           
