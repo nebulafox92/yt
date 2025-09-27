@@ -1,0 +1,105 @@
+name: Upload Video to YouTube in Parts
+
+on:
+  workflow_dispatch:
+    inputs:
+      stream_base_url:
+        description: "URL base del stream (termina en /1080p60/)"
+        required: true
+        type: string
+      video_title:
+        description: "Título base para el video en YouTube (ej: Vector | 30/08/2025)"
+        required: true
+        type: string
+      wait_time:
+        description: "Tiempo de espera entre subidas en segundos (por defecto 7200 = 2 horas)"
+        required: false
+        default: "7200"
+        type: string
+
+jobs:
+  upload-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Prepare environment
+        run: |
+          sudo mkdir -p /mnt/workspace
+          sudo chown $USER:$USER /mnt/workspace
+          mkdir -p /mnt/workspace/temp_parts
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade google-auth google-auth-oauthlib google-auth-httplib2 google-api-python-client requests oauth2client tqdm m3u8
+          sudo apt update
+          sudo apt install -y ffmpeg wget
+
+      - name: Download authentication files
+        working-directory: /mnt/workspace
+        run: |
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
+        #  wget https://github.com/mazurikian/test/raw/refs/heads/main/client_secret.json
+
+      - name: Download and process segments with absolute URLs
+        working-directory: /mnt/workspace
+        env:
+          STREAM_BASE_URL: ${{ github.event.inputs.stream_base_url }}
+          VIDEO_TITLE: ${{ github.event.inputs.video_title }}
+          WAIT_TIME: ${{ github.event.inputs.wait_time }}
+        run: |
+          echo "Base stream URL: $STREAM_BASE_URL"
+          echo "Video title: $VIDEO_TITLE"
+          echo "Wait time between uploads: $WAIT_TIME seconds"
+
+          # Descargar el playlist principal
+          wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          
+          # Parsear y procesar los segmentos con URLs absolutas
+          python -c "
+          import m3u8
+          base_url = '${STREAM_BASE_URL}'
+          playlist = m3u8.load('master.m3u8')
+          
+          segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
+          
+          total = len(segments)
+          split_point = total // 2 + total % 2  # Para números impares
+          
+          print(f'Total segments: {total}')
+          print(f'First part segments: {split_point}')
+          print(f'Second part segments: {total - split_point}')
+          
+          with open('segments_absolute_part1.txt', 'w') as f:
+              f.write('\n'.join(segments[:split_point]))
+          with open('segments_absolute_part2.txt', 'w') as f:
+              f.write('\n'.join(segments[split_point:]))
+          "
+          
+          # Procesar primera parte
+          echo "Downloading and concatenating first part..."
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
+          
+          echo "Uploading first part..."
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "${VIDEO_TITLE} | 1/2"
+          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
+          
+          # Esperar antes de subir la segunda parte
+          echo "Waiting $WAIT_TIME seconds before uploading the second part..."
+          sleep $WAIT_TIME
+          
+          # Procesar segunda parte
+          echo "Downloading and concatenating second part..."
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
+
+          echo "Uploading second part..."
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "${VIDEO_TITLE} | 2/2"
+          rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
