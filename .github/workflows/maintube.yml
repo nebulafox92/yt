@@ -1,21 +1,8 @@
+
 name: Upload Video to YouTube in Parts
 
 on:
   workflow_dispatch:
-    inputs:
-      stream_base_url:
-        description: "URL base del stream (termina en /1080p60/)"
-        required: true
-        type: string
-      video_title:
-        description: "Título base para el video en YouTube (ej: Vector | 31/08/2025)"
-        required: true
-        type: string
-      wait_time:
-        description: "Tiempo de espera entre subidas en segundos (por defecto 7200 = 2 horas)"
-        required: false
-        default: "7200"
-        type: string
 
 jobs:
   upload-video:
@@ -51,15 +38,10 @@ jobs:
 
       - name: Download and process segments with absolute URLs
         working-directory: /mnt/workspace
-        env:
-          STREAM_BASE_URL: ${{ github.event.inputs.stream_base_url }}
-          VIDEO_TITLE: ${{ github.event.inputs.video_title }}
-          WAIT_TIME: ${{ github.event.inputs.wait_time }}
         run: |
-          echo "Base stream URL: $STREAM_BASE_URL"
-          echo "Video title: $VIDEO_TITLE"
-          echo "Wait time between uploads: $WAIT_TIME seconds"
-
+          # Definir la URL base del stream
+          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/31/16/6/HL3QmP6Wfsva/media/hls/1080p60/"
+          
           # Descargar el playlist principal
           wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
           
@@ -69,6 +51,7 @@ jobs:
           base_url = '${STREAM_BASE_URL}'
           playlist = m3u8.load('master.m3u8')
           
+          # Obtener URLs absolutas de todos los segmentos
           segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
           
           total = len(segments)
@@ -78,6 +61,7 @@ jobs:
           print(f'First part segments: {split_point}')
           print(f'Second part segments: {total - split_point}')
           
+          # Guardar listas de segmentos
           with open('segments_absolute_part1.txt', 'w') as f:
               f.write('\n'.join(segments[:split_point]))
           with open('segments_absolute_part2.txt', 'w') as f:
@@ -86,22 +70,19 @@ jobs:
           
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
-          awk '{print "file \x27" $0 "\x27"}' segments_absolute_part1.txt > concat_part1.txt
-          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i concat_part1.txt -c copy -y /mnt/workspace/temp_parts/part1.ts
-
-          echo "Uploading first part..."
-          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "${VIDEO_TITLE} | 1/2"
-          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
           
-          # Esperar antes de subir la segunda parte
-          echo "Waiting $WAIT_TIME seconds before uploading the second part..."
-          sleep $WAIT_TIME
+          echo "Uploading first part..."
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 31/08/2025 | 1/2"
+          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
           
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
-          awk '{print "file \x27" $0 "\x27"}' segments_absolute_part2.txt > concat_part2.txt
-          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i concat_part2.txt -c copy -y /mnt/workspace/temp_parts/part2.ts
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
+
+          echo "Shutfuckup, wait..."
+          sleep 7200
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "${VIDEO_TITLE} | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 31/08/2025 | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
