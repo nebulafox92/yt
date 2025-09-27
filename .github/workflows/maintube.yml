@@ -1,8 +1,16 @@
-
 name: Upload Video to YouTube in Parts
 
 on:
   workflow_dispatch:
+    inputs:
+      stream_url:
+        description: 'Base URL del stream HLS (termina con /)'
+        required: true
+        default: 'https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/30/16/50/uXtdHOry9ZUH/media/hls/1080p60/'
+      video_title:
+        description: 'Título base para el video en YouTube'
+        required: true
+        default: 'Vector | 31/08/2025'
 
 jobs:
   upload-video:
@@ -34,16 +42,19 @@ jobs:
         run: |
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
-        #  wget https://github.com/mazurikian/test/raw/refs/heads/main/client_secret.json
 
       - name: Download and process segments with absolute URLs
         working-directory: /mnt/workspace
         run: |
-          # Definir la URL base del stream
-          STREAM_BASE_URL="https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/31/16/6/HL3QmP6Wfsva/media/hls/1080p60/"
+          # Obtener valores de entrada
+          STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
+          VIDEO_TITLE="${{ github.event.inputs.video_title }}"
+
+          echo "Stream URL: $STREAM_BASE_URL"
+          echo "Video title: $VIDEO_TITLE"
           
           # Descargar el playlist principal
-          wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
           
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
@@ -73,16 +84,16 @@ jobs:
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
           
           echo "Uploading first part..."
-          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | 31/08/2025 | 1/2"
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "$VIDEO_TITLE | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
           
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
 
-          echo "Shutfuckup, wait..."
+          echo "Waiting 2 hours before next upload..."
           sleep 7200
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | 31/08/2025 | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "$VIDEO_TITLE | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
