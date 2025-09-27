@@ -4,11 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       stream_base_url:
-        description: "URL base del stream (termina en /1080p60/playlist.m3u8)"
+        description: "URL base del stream (termina en /1080p60/)"
         required: true
         type: string
       video_title:
-        description: "Título base para el video en YouTube (ej: Vector | 30/08/2025)"
+        description: "Título base para el video en YouTube (ej: Vector | 31/08/2025)"
         required: true
         type: string
       wait_time:
@@ -61,7 +61,7 @@ jobs:
           echo "Wait time between uploads: $WAIT_TIME seconds"
 
           # Descargar el playlist principal
-          wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}"
+          wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O playlist.m3u8
           
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
