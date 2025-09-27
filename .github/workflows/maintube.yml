@@ -46,9 +46,9 @@ jobs:
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
 
           # Extraer año, mes y día de la URL (deben ser -5, -4, -3)
-          YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
-          MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
-          DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
+          YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
+          MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
+          DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-6)}')
 
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
