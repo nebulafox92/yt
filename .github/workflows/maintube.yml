@@ -7,10 +7,6 @@ on:
         description: 'Base URL del stream HLS (termina con /)'
         required: true
         default: 'https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/31/16/6/HL3QmP6Wfsva/media/hls/1080p60/'
-      video_title:
-        description: 'Título base para el video en YouTube'
-        required: true
-        default: 'Vector | 31/08/2025'
 
 jobs:
   upload-video:
@@ -48,7 +44,14 @@ jobs:
         run: |
           # Obtener valores de entrada
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
-          VIDEO_TITLE="${{ github.event.inputs.video_title }}"
+
+          # Extraer año, mes y día de la URL (ajusta el NF-... según corresponda)
+          # En tu ejemplo, los componentes están en las posiciones -6 (día), -7 (mes), -8 (año)
+          YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-6)}')
+          MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
+          DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
+          # Asegura formato dos dígitos
+          VIDEO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
 
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
@@ -61,32 +64,26 @@ jobs:
           import m3u8
           base_url = '${STREAM_BASE_URL}'
           playlist = m3u8.load('master.m3u8')
-          
-          # Obtener URLs absolutas de todos los segmentos
           segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
-          
           total = len(segments)
-          split_point = total // 2 + total % 2  # Para números impares
-          
+          split_point = total // 2 + total % 2
           print(f'Total segments: {total}')
           print(f'First part segments: {split_point}')
           print(f'Second part segments: {total - split_point}')
-          
-          # Guardar listas de segmentos
           with open('segments_absolute_part1.txt', 'w') as f:
-              f.write('\n'.join(segments[:split_point]))
+          f.write('\n'.join(segments[:split_point]))
           with open('segments_absolute_part2.txt', 'w') as f:
-              f.write('\n'.join(segments[split_point:]))
+          f.write('\n'.join(segments[split_point:]))
           "
-          
+
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
-          
+
           echo "Uploading first part..."
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "$VIDEO_TITLE | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
-          
+
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
           ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
