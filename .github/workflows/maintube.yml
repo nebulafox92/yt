@@ -86,8 +86,9 @@ jobs:
           
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
-          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
-          
+          awk '{print "file \x27" $0 "\x27"}' segments_absolute_part1.txt > concat_part1.txt
+          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i concat_part1.txt -c copy -y /mnt/workspace/temp_parts/part1.ts
+
           echo "Uploading first part..."
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "${VIDEO_TITLE} | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
@@ -98,7 +99,8 @@ jobs:
           
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
-          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
+          awk '{print "file \x27" $0 "\x27"}' segments_absolute_part2.txt > concat_part2.txt
+          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i concat_part2.txt -c copy -y /mnt/workspace/temp_parts/part2.ts
 
           echo "Uploading second part..."
           python script.py --file /mnt/workspace/temp_parts/part2.ts --title "${VIDEO_TITLE} | 2/2"
