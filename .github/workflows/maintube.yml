@@ -16,10 +16,6 @@ on:
         required: false
         default: "7200"
         type: string
-      video_url:
-        description: "URL directa a playlist.m3u8 (opcional, ffmpeg lo usará si se define)"
-        required: false
-        type: string
 
 jobs:
   upload-video:
@@ -59,27 +55,18 @@ jobs:
           STREAM_BASE_URL: ${{ github.event.inputs.stream_base_url }}
           VIDEO_TITLE: ${{ github.event.inputs.video_title }}
           WAIT_TIME: ${{ github.event.inputs.wait_time }}
-          VIDEO_URL: ${{ github.event.inputs.video_url }}
         run: |
           echo "Base stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
           echo "Wait time between uploads: $WAIT_TIME seconds"
-          echo "Direct video URL (if provided): $VIDEO_URL"
 
-          if [ -z "$VIDEO_URL" ]; then
-            echo "Downloading playlist from base stream URL..."
-            wget "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
-          else
-            echo "Downloading playlist from provided VIDEO_URL..."
-            wget "$VIDEO_URL" -O master.m3u8
-          fi
+          # Descargar el playlist principal
+          wget "${STREAM_BASE_URL}" -O master.m3u8
           
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
           import m3u8
-          import os
-          
-          base_url = os.environ.get('STREAM_BASE_URL')
+          base_url = '${STREAM_BASE_URL}'
           playlist = m3u8.load('master.m3u8')
           
           segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
@@ -97,42 +84,22 @@ jobs:
               f.write('\n'.join(segments[split_point:]))
           "
           
-          ##############################################
-          # Procesar primera parte con opciones avanzadas de ffmpeg
-          ##############################################
-          echo "Downloading and concatenating first part with advanced ffmpeg options..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
-            -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) \
-            -c copy \
-            -multiple_requests 1 \
-            -rtbufsize 100M \
-            -thread_queue_size 512 \
-            -http_persistent 1 \
-            -y /mnt/workspace/temp_parts/part1.ts
+          # Procesar primera parte
+          echo "Downloading and concatenating first part..."
+          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
           
-          echo "Uploading first part to YouTube..."
+          echo "Uploading first part..."
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "${VIDEO_TITLE} | 1/2"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
           
-          ##############################################
-          # Espera antes de la segunda parte
-          ##############################################
+          # Esperar antes de subir la segunda parte
           echo "Waiting $WAIT_TIME seconds before uploading the second part..."
           sleep $WAIT_TIME
           
-          ##############################################
-          # Procesar segunda parte con opciones avanzadas de ffmpeg
-          ##############################################
-          echo "Downloading and concatenating second part with advanced ffmpeg options..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
-            -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
-            -c copy \
-            -multiple_requests 1 \
-            -rtbufsize 100M \
-            -thread_queue_size 512 \
-            -http_persistent 1 \
-            -y /mnt/workspace/temp_parts/part2.ts
+          # Procesar segunda parte
+          echo "Downloading and concatenating second part..."
+          ffmpeg -f concat -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
 
-          echo "Uploading second part to YouTube..."
+          echo "Uploading second part..."
           python script.py --file /mnt/workspace/temp_parts/part2.ts --title "${VIDEO_TITLE} | 2/2"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
