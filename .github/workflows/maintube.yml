@@ -45,7 +45,7 @@ jobs:
           # Obtener valores de entrada
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
 
-          # Extraer año, mes y día de la URL (deben ser -5, -4, -3)
+          # Extraer año, mes y día de la URL
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
           DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
@@ -54,10 +54,10 @@ jobs:
 
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
-          
+
           # Descargar el playlist principal
           wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
-          
+
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
           import m3u8
@@ -70,14 +70,16 @@ jobs:
           print(f'First part segments: {split_point}')
           print(f'Second part segments: {total - split_point}')
           with open('segments_absolute_part1.txt', 'w') as f:
-             f.write('\n'.join(segments[:split_point]))
+              f.write('\n'.join(segments[:split_point]))
           with open('segments_absolute_part2.txt', 'w') as f:
-             f.write('\n'.join(segments[split_point:]))
+              f.write('\n'.join(segments[split_point:]))
           "
 
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part1.ts
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+            -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) \
+            -c copy -y /mnt/workspace/temp_parts/part1.ts
 
           echo "Uploading first part..."
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "$VIDEO_TITLE | 1/2"
@@ -85,7 +87,9 @@ jobs:
 
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) -c copy -y /mnt/workspace/temp_parts/part2.ts
+          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+            -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
+            -c copy -y /mnt/workspace/temp_parts/part2.ts
 
           echo "Waiting 2 hours before next upload..."
           sleep 7200
