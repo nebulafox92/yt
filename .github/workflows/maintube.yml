@@ -11,6 +11,10 @@ on:
         description: 'Título opcional para el video en YouTube (si no se indica, se genera automáticamente)'
         required: false
         default: ''
+      video_description:
+        description: 'Descripción opcional para el video en YouTube'
+        required: false
+        default: 'Subido automáticamente desde el stream de Vector.'
 
 jobs:
   upload-video:
@@ -49,6 +53,7 @@ jobs:
           # Obtener valores de entrada
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
           INPUT_TITLE="${{ github.event.inputs.video_title }}"
+          INPUT_DESCRIPTION="${{ github.event.inputs.video_description }}"
 
           # Extraer año, mes y día de la URL si no se ha proporcionado un título
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
@@ -66,6 +71,7 @@ jobs:
 
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
+          echo "Video description: $INPUT_DESCRIPTION"
 
           # Descargar el playlist principal
           wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
@@ -94,7 +100,7 @@ jobs:
             -c copy -y /mnt/workspace/temp_parts/part1.ts
 
           echo "Uploading first part..."
-          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2"
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2" --description "$INPUT_DESCRIPTION"
           rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
 
           # Procesar segunda parte
@@ -107,5 +113,5 @@ jobs:
           sleep 7200
 
           echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2"
+          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2" --description "$INPUT_DESCRIPTION"
           rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
