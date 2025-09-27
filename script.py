@@ -6,7 +6,7 @@ from oauth2client.tools import run_flow
 import argparse
 import os
 
-def upload_video(file_path, title):
+def upload_video(file_path, title, description):
     # Verificar si el archivo existe
     if not os.path.exists(file_path):
         print(f"Error: El archivo {file_path} no existe")
@@ -26,12 +26,13 @@ def upload_video(file_path, title):
         # Configurar carga con fragmentación
         media = MediaFileUpload(file_path, mimetype='video/*', chunksize=-1, resumable=True)
 
+        # Crear la solicitud de subida
         request = youtube.videos().insert(
             part="snippet,status",
             body={
                 "snippet": {
                     "title": title,
-                    "description": "HOY DOMINGO DE VICIO Y VIDEITOS... TOCA HACER NUKETOWN EN MINECRAFT ⭐ - !betbox !r1skins !kingslv !crew - META SUBS: 145/150 https://kick.com/vector/videos/ec49afd5-3713-4042-9393-39c8623bb30d",
+                    "description": description,  # Descripción dinámica
                     "categoryId": "22"
                 },
                 "status": {
@@ -57,6 +58,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", required=True, help="Path to video file")
     parser.add_argument("--title", required=True, help="Video title")
+    parser.add_argument("--description", required=True, help="Video description")
     args = parser.parse_args()
     
-    upload_video(args.file, args.title)
+    upload_video(args.file, args.title, args.description)
