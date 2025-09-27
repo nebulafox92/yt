@@ -7,6 +7,10 @@ on:
         description: 'Base URL del stream HLS (termina con /)'
         required: true
         default: 'https://stream.kick.com/ivs/v1/196233775518/V3f9DWwe2lks/2025/8/31/16/6/HL3QmP6Wfsva/media/hls/1080p60/'
+      video_title:
+        description: 'Título opcional para el video en YouTube (si no se indica, se genera automáticamente)'
+        required: false
+        default: ''
 
 jobs:
   upload-video:
@@ -44,13 +48,21 @@ jobs:
         run: |
           # Obtener valores de entrada
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
+          INPUT_TITLE="${{ github.event.inputs.video_title }}"
 
-          # Extraer año, mes y día de la URL
+          # Extraer año, mes y día de la URL si no se ha proporcionado un título
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
           DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
 
-          VIDEO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
+          AUTO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
+
+          # Si existe INPUT_TITLE, se usa; si no, se usa el AUTO_TITLE
+          if [ -n "$INPUT_TITLE" ]; then
+            VIDEO_TITLE="$INPUT_TITLE"
+          else
+            VIDEO_TITLE="$AUTO_TITLE"
+          fi
 
           echo "Stream URL: $STREAM_BASE_URL"
           echo "Video title: $VIDEO_TITLE"
