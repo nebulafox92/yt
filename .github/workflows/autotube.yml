@@ -38,7 +38,7 @@ jobs:
         working-directory: /mnt/workspace
         run: |
           API_URL="https://kick.com/api/v2/channels/vector/videos"
-          JSON=$(curl -s -A "Mozilla/5.0" "$API_URL")
+          JSON=$(curl -A "Mozilla/5.0" "$API_URL")
           
           # Verificar si hay videos
           if [ "$(echo "$JSON" | jq length)" -eq 0 ]; then
@@ -52,7 +52,7 @@ jobs:
           SESSION_TITLE=$(echo "$JSON" | jq -r '.[0].session_title')
 
           BASE="${SOURCE%/*}"
-          SEGMENT=$(curl -s -A "Mozilla/5.0" "$SOURCE" | awk '!/^#/ {print; exit}')
+          SEGMENT=$(curl -A "Mozilla/5.0" "$SOURCE" | awk '!/^#/ {print; exit}')
           BEST_M3U8="$BASE/$SEGMENT"
 
           echo "UUID=$UUID" >> $GITHUB_ENV
