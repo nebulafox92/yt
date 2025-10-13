@@ -99,9 +99,9 @@ jobs:
             -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) \
             -c copy -y /mnt/workspace/temp_parts/part1.ts
 
-          #echo "Uploading first part..."
-          #python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2" --description "$INPUT_DESCRIPTION"
-          #rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
+          echo "Uploading first part..."
+          python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2" --description "$INPUT_DESCRIPTION"
+          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
 
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
@@ -109,8 +109,8 @@ jobs:
             -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
             -c copy -y /mnt/workspace/temp_parts/part2.ts
 
-          #echo "Waiting 2 hours before next upload..."
-          #sleep 7200
+          echo "Waiting 2 hours before next upload..."
+          sleep 7200
 
           echo "Uploading second part..."
           python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2" --description "$INPUT_DESCRIPTION"
