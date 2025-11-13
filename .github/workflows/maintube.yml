@@ -74,7 +74,7 @@ jobs:
           echo "Video description: $INPUT_DESCRIPTION"
 
           # Descargar el playlist principal
-          wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
 
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
