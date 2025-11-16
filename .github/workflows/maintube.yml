@@ -79,18 +79,18 @@ jobs:
 
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
-import m3u8
-base_url = '${STREAM_BASE_URL}'
-playlist = m3u8.load('master.m3u8')
-segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
-total = len(segments)
-split_point = total // 2 + total % 2
-print(f'Total segments: {total}')
-with open('segments_absolute_part1.txt', 'w') as f:
-    f.write('\n'.join(segments[:split_point]))
-with open('segments_absolute_part2.txt', 'w') as f:
-    f.write('\n'.join(segments[split_point:]))
-"
+          import m3u8
+          base_url = '${STREAM_BASE_URL}'
+          playlist = m3u8.load('master.m3u8')
+          segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
+          total = len(segments)
+          split_point = total // 2 + total % 2
+          print(f'Total segments: {total}')
+          with open('segments_absolute_part1.txt', 'w') as f:
+            f.write('\n'.join(segments[:split_point]))
+          with open('segments_absolute_part2.txt', 'w') as f:
+            f.write('\n'.join(segments[split_point:]))
+          "
 
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
