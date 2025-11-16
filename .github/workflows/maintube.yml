@@ -44,18 +44,18 @@ jobs:
       - name: Download authentication files
         working-directory: /mnt/workspace
         run: |
-          wget --user-agent="Mozilla/5.0" https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
-          wget --user-agent="Mozilla/5.0" https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
+          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
 
-      - name: Download and process segments with absolute URLs
+      - name: Download and process segments with wget
         working-directory: /mnt/workspace
         run: |
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0"
-
+          # Obtener valores de entrada
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
           INPUT_TITLE="${{ github.event.inputs.video_title }}"
           INPUT_DESCRIPTION="${{ github.event.inputs.video_description }}"
 
+          # Extraer año, mes y día si no hay título
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
           DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
@@ -72,69 +72,70 @@ jobs:
           echo "Video title: $VIDEO_TITLE"
           echo "Video description: $INPUT_DESCRIPTION"
 
-          ##############################
-          # Descargar playlist principal
-          ##############################
-          wget --user-agent="$UA" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          # Descargar playlist HLS
+          wget --user-agent="Mozilla/5.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
 
-          ###############################################
-          # Parseo de segmentos y división en 2 partes
-          ###############################################
-          python -c "
+          # Leer playlist y generar listas de segmentos absolutos
+          python - << 'EOF'
           import m3u8
-          base_url = '${STREAM_BASE_URL}'
-          playlist = m3u8.load('master.m3u8')
-          segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
-          total = len(segments)
-          split_point = total // 2 + total % 2
-          print(f'Total segments: {total}')
-          with open('segments_absolute_part1.txt', 'w') as f:
-             f.write('\n'.join(segments[:split_point]))
-          with open('segments_absolute_part2.txt', 'w') as f:
-             f.write('\n'.join(segments[split_point:]))
-          "
 
-          ###############################################
-          # DESCARGA DE SEGMENTOS - PARTE 1
-          ###############################################
-          mkdir -p segs_part1
-          rm -f list_part1.txt
-          count=0
+          base = "${STREAM_BASE_URL}"
+          playlist = m3u8.load("master.m3u8")
+
+          segments = []
+             for seg in playlist.segments:
+              url = seg.uri if seg.uri.startswith("http") else base + seg.uri
+            segments.append(url)
+
+           total = len(segments)
+           split_point = total // 2 + (total % 2)
+
+            print("Total segments:", total)
+
+           with open("segments1.txt", "w") as f:
+              f.write("\n".join(segments[:split_point]))
+           with open("segments2.txt", "w") as f:
+              f.write("\n".join(segments[split_point:]))
+          EOF
+
+          # Crear carpetas
+          mkdir -p segments_part1 segments_part2
+
+          echo "===== Descargando parte 1 ====="
+          i=1
           while read -r URL; do
-            fname=$(printf "seg_%05d.ts" "$count")
-            wget --user-agent="$UA" -q --show-progress "$URL" -O "segs_part1/$fname"
-            echo "file 'segs_part1/$fname'" >> list_part1.txt
-            count=$((count+1))
-          done < segments_absolute_part1.txt
+            printf "[%s] %s\n" "$i" "$URL"
+            wget --quiet --show-progress "$URL" -O "segments_part1/seg_$i.ts"
+            i=$((i+1))
+          done < segments1.txt
 
-          echo "Concatenando parte 1..."
-          ffmpeg -f concat -safe 0 -i list_part1.txt -c copy -y /mnt/workspace/temp_parts/part1.ts
+          echo "===== Descargando parte 2 ====="
+          j=1
+          while read -r URL; do
+            printf "[%s] %s\n" "$j" "$URL"
+            wget --quiet --show-progress "$URL" -O "segments_part2/seg_$j.ts"
+            j=$((j+1))
+          done < segments2.txt
 
-          echo "Subiendo parte 1..."
+          # Crear listas para ffmpeg
+          ls segments_part1/*.ts | sed "s/^/file '/; s/$/'/" > concat_list_part1.txt
+          ls segments_part2/*.ts | sed "s/^/file '/; s/$/'/" > concat_list_part2.txt
+
+          echo "===== Concatenando parte 1 ====="
+          ffmpeg -f concat -safe 0 -i concat_list_part1.txt -c copy -y /mnt/workspace/temp_parts/part1.ts
+
+          echo "===== Subiendo parte 1 ====="
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2" --description "$INPUT_DESCRIPTION"
 
-          rm -r segs_part1 list_part1.txt segments_absolute_part1.txt
+          rm -rf segments_part1 concat_list_part1.txt segments1.txt
 
-          ###############################################
-          # DESCARGA DE SEGMENTOS - PARTE 2
-          ###############################################
-          mkdir -p segs_part2
-          rm -f list_part2.txt
-          count=0
-          while read -r URL; do
-            fname=$(printf "seg_%05d.ts" "$count")
-            wget --user-agent="$UA" -q --show-progress "$URL" -O "segs_part2/$fname"
-            echo "file 'segs_part2/$fname'" >> list_part2.txt
-            count=$((count+1))
-          done < segments_absolute_part2.txt
+          echo "===== Concatenando parte 2 ====="
+          ffmpeg -f concat -safe 0 -i concat_list_part2.txt -c copy -y /mnt/workspace/temp_parts/part2.ts
 
-          echo "Concatenando parte 2..."
-          ffmpeg -f concat -safe 0 -i list_part2.txt -c copy -y /mnt/workspace/temp_parts/part2.ts
-
-          echo "Esperando 2 horas antes del segundo upload..."
+          echo "Esperando 2 horas antes de subir la parte 2..."
           sleep 7200
 
-          echo "Subiendo parte 2..."
+          echo "===== Subiendo parte 2 ====="
           python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2" --description "$INPUT_DESCRIPTION"
 
-          rm -r segs_part2 list_part2.txt segments_absolute_part2.txt master.m3u8
+          rm -rf segments_part2 concat_list_part2.txt segments2.txt master.m3u8
