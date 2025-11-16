@@ -44,25 +44,24 @@ jobs:
       - name: Download authentication files
         working-directory: /mnt/workspace
         run: |
-          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
-          wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
+          wget --user-agent="Mozilla/5.0" https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
+          wget --user-agent="Mozilla/5.0" https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
 
       - name: Download and process segments with absolute URLs
         working-directory: /mnt/workspace
         run: |
-          # Obtener valores de entrada
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0"
+
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
           INPUT_TITLE="${{ github.event.inputs.video_title }}"
           INPUT_DESCRIPTION="${{ github.event.inputs.video_description }}"
 
-          # Extraer año, mes y día de la URL si no se ha proporcionado un título
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
           DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
 
           AUTO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
 
-          # Si existe INPUT_TITLE, se usa; si no, se usa el AUTO_TITLE
           if [ -n "$INPUT_TITLE" ]; then
             VIDEO_TITLE="$INPUT_TITLE"
           else
@@ -73,10 +72,14 @@ jobs:
           echo "Video title: $VIDEO_TITLE"
           echo "Video description: $INPUT_DESCRIPTION"
 
-          # Descargar el playlist principal
-          wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          ##############################
+          # Descargar playlist principal
+          ##############################
+          wget --user-agent="$UA" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
 
-          # Parsear y procesar los segmentos con URLs absolutas
+          ###############################################
+          # Parseo de segmentos y división en 2 partes
+          ###############################################
           python -c "
           import m3u8
           base_url = '${STREAM_BASE_URL}'
@@ -85,33 +88,53 @@ jobs:
           total = len(segments)
           split_point = total // 2 + total % 2
           print(f'Total segments: {total}')
-          print(f'First part segments: {split_point}')
-          print(f'Second part segments: {total - split_point}')
           with open('segments_absolute_part1.txt', 'w') as f:
-              f.write('\n'.join(segments[:split_point]))
+             f.write('\n'.join(segments[:split_point]))
           with open('segments_absolute_part2.txt', 'w') as f:
-              f.write('\n'.join(segments[split_point:]))
+             f.write('\n'.join(segments[split_point:]))
           "
 
-          # Procesar primera parte
-          echo "Downloading and concatenating first part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
-            -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) \
-            -c copy -y /mnt/workspace/temp_parts/part1.ts
+          ###############################################
+          # DESCARGA DE SEGMENTOS - PARTE 1
+          ###############################################
+          mkdir -p segs_part1
+          rm -f list_part1.txt
+          count=0
+          while read -r URL; do
+            fname=$(printf "seg_%05d.ts" "$count")
+            wget --user-agent="$UA" -q --show-progress "$URL" -O "segs_part1/$fname"
+            echo "file 'segs_part1/$fname'" >> list_part1.txt
+            count=$((count+1))
+          done < segments_absolute_part1.txt
 
-          echo "Uploading first part..."
+          echo "Concatenando parte 1..."
+          ffmpeg -f concat -safe 0 -i list_part1.txt -c copy -y /mnt/workspace/temp_parts/part1.ts
+
+          echo "Subiendo parte 1..."
           python script.py --file /mnt/workspace/temp_parts/part1.ts --title "Vector | $VIDEO_TITLE | 1/2" --description "$INPUT_DESCRIPTION"
-          rm /mnt/workspace/temp_parts/part1.ts segments_absolute_part1.txt
 
-          # Procesar segunda parte
-          echo "Downloading and concatenating second part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
-            -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
-            -c copy -y /mnt/workspace/temp_parts/part2.ts
+          rm -r segs_part1 list_part1.txt segments_absolute_part1.txt
 
-          echo "Waiting 2 hours before next upload..."
+          ###############################################
+          # DESCARGA DE SEGMENTOS - PARTE 2
+          ###############################################
+          mkdir -p segs_part2
+          rm -f list_part2.txt
+          count=0
+          while read -r URL; do
+            fname=$(printf "seg_%05d.ts" "$count")
+            wget --user-agent="$UA" -q --show-progress "$URL" -O "segs_part2/$fname"
+            echo "file 'segs_part2/$fname'" >> list_part2.txt
+            count=$((count+1))
+          done < segments_absolute_part2.txt
+
+          echo "Concatenando parte 2..."
+          ffmpeg -f concat -safe 0 -i list_part2.txt -c copy -y /mnt/workspace/temp_parts/part2.ts
+
+          echo "Esperando 2 horas antes del segundo upload..."
           sleep 7200
 
-          echo "Uploading second part..."
+          echo "Subiendo parte 2..."
           python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2" --description "$INPUT_DESCRIPTION"
-          rm /mnt/workspace/temp_parts/part2.ts segments_absolute_part2.txt master.m3u8
+
+          rm -r segs_part2 list_part2.txt segments_absolute_part2.txt master.m3u8
