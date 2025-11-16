@@ -62,7 +62,7 @@ jobs:
 
           AUTO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
 
-          # Si existe INPUT_TITLE, se usa; si no, se usa el AUTO_TITLE
+          # Si existe INPUT_TITLE, se usa
           if [ -n "$INPUT_TITLE" ]; then
             VIDEO_TITLE="$INPUT_TITLE"
           else
@@ -73,29 +73,29 @@ jobs:
           echo "Video title: $VIDEO_TITLE"
           echo "Video description: $INPUT_DESCRIPTION"
 
-          # Descargar el playlist principal
-          wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/125.0" "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
+          # Descargar el playlist principal con User-Agent
+          wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/125.0" \
+            "${STREAM_BASE_URL}playlist.m3u8" -O master.m3u8
 
           # Parsear y procesar los segmentos con URLs absolutas
           python -c "
-          import m3u8
-          base_url = '${STREAM_BASE_URL}'
-          playlist = m3u8.load('master.m3u8')
-          segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
-          total = len(segments)
-          split_point = total // 2 + total % 2
-          print(f'Total segments: {total}')
-          print(f'First part segments: {split_point}')
-          print(f'Second part segments: {total - split_point}')
-          with open('segments_absolute_part1.txt', 'w') as f:
-              f.write('\n'.join(segments[:split_point]))
-          with open('segments_absolute_part2.txt', 'w') as f:
-              f.write('\n'.join(segments[split_point:]))
-          "
+import m3u8
+base_url = '${STREAM_BASE_URL}'
+playlist = m3u8.load('master.m3u8')
+segments = [base_url + seg.uri if not seg.uri.startswith('http') else seg.uri for seg in playlist.segments]
+total = len(segments)
+split_point = total // 2 + total % 2
+print(f'Total segments: {total}')
+with open('segments_absolute_part1.txt', 'w') as f:
+    f.write('\n'.join(segments[:split_point]))
+with open('segments_absolute_part2.txt', 'w') as f:
+    f.write('\n'.join(segments[split_point:]))
+"
 
           # Procesar primera parte
           echo "Downloading and concatenating first part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+          ffmpeg -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/125.0" \
+            -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
             -i <(for f in $(cat segments_absolute_part1.txt); do echo "file '$f'"; done) \
             -c copy -y /mnt/workspace/temp_parts/part1.ts
 
@@ -105,7 +105,8 @@ jobs:
 
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
-          ffmpeg -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+          ffmpeg -user_agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/125.0" \
+            -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
             -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
             -c copy -y /mnt/workspace/temp_parts/part2.ts
 
