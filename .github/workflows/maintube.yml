@@ -54,7 +54,7 @@ jobs:
         run: |
           # Descargar segunda parte específica: 1878-3755 y concatenar manualmente
           for i in $(seq 1878 3755); do
-            wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36" \
+            wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" \
               "${STREAM_BASE_URL}${i}.ts"
           done
           # Crear listado de archivos
