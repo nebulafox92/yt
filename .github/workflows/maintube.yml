@@ -54,7 +54,7 @@ jobs:
           STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
           INPUT_TITLE="${{ github.event.inputs.video_title }}"
           INPUT_DESCRIPTION="${{ github.event.inputs.video_description }}"
-
+          
           # Extraer fecha de la URL si no se proporciona título
           YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
           MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
@@ -94,3 +94,26 @@ jobs:
 
           # Limpiar archivos temporales
           rm /mnt/workspace/temp_parts/part2.ts half_playlist.m3u8 playlist.m3u8
+
+      - name: Descargar y concatenar segmentos usando secuencia personalizada
+        working-directory: /mnt/workspace
+        run: |
+          # Descargar segunda parte específica: 1878-3755 y concatenar manualmente
+          for i in $(seq 1878 3755); do
+            wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36" \
+              "${STREAM_BASE_URL}${i}.ts"
+          done
+          # Crear listado de archivos
+          for i in $(seq 1878 3755); do
+            echo "file '${i}.ts'"
+          done > inputs.txt
+          # Concatenar todos los .ts descargados en uno solo
+          ffmpeg -f concat -safe 0 -i inputs.txt -c copy -y /mnt/workspace/temp_parts/seg_part2.ts
+          # Limpiar archivos temporales individuales
+          rm $(seq -f "%g.ts" 1878 3755) inputs.txt
+
+      - name: Subir segunda parte con .ts personalizado
+        working-directory: /mnt/workspace
+        run: |
+          python script.py --file /mnt/workspace/temp_parts/seg_part2.ts --title "Vector | $VIDEO_TITLE | 2/2 (manual range)" --description "$INPUT_DESCRIPTION"
+          rm /mnt/workspace/temp_parts/seg_part2.ts
