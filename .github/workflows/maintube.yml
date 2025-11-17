@@ -49,6 +49,8 @@ jobs:
 
       - name: Descargar y concatenar segmentos usando secuencia personalizada
         working-directory: /mnt/workspace
+        env:
+          STREAM_BASE_URL: ${{ github.event.inputs.stream_url }}
         run: |
           # Descargar segunda parte específica: 1878-3755 y concatenar manualmente
           for i in $(seq 1878 3755); do
@@ -66,6 +68,9 @@ jobs:
 
       - name: Subir segunda parte con .ts personalizado
         working-directory: /mnt/workspace
+        env:
+          VIDEO_TITLE: ${{ github.event.inputs.video_title }}
+          INPUT_DESCRIPTION: ${{ github.event.inputs.video_description }}
         run: |
           python script.py --file /mnt/workspace/temp_parts/seg_part2.ts --title "Vector | $VIDEO_TITLE | 2/2 (manual range)" --description "$INPUT_DESCRIPTION"
           rm /mnt/workspace/temp_parts/seg_part2.ts
