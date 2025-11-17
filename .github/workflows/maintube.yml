@@ -47,6 +47,11 @@ jobs:
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
 
+
+      - name: Debugging with tmate
+        uses: mxschmitt/action-tmate@v3.23
+
+
       - name: Descargar y concatenar segmentos usando secuencia personalizada
         working-directory: /mnt/workspace
         env:
