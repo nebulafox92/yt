@@ -47,54 +47,6 @@ jobs:
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/oauth2.json
           wget https://github.com/nebulafox92/yt/raw/refs/heads/main/script.py
 
-      - name: Download and process second half of segments
-        working-directory: /mnt/workspace
-        run: |
-          # Obtener valores de entrada
-          STREAM_BASE_URL="${{ github.event.inputs.stream_url }}"
-          INPUT_TITLE="${{ github.event.inputs.video_title }}"
-          INPUT_DESCRIPTION="${{ github.event.inputs.video_description }}"
-          
-          # Extraer fecha de la URL si no se proporciona título
-          YEAR=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-9)}')
-          MONTH=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-8)}')
-          DAY=$(echo "$STREAM_BASE_URL" | awk -F'/' '{print $(NF-7)}')
-
-          AUTO_TITLE=$(printf "%02d/%02d/%s" "$DAY" "$MONTH" "$YEAR")
-
-          if [ -n "$INPUT_TITLE" ]; then
-            VIDEO_TITLE="$INPUT_TITLE"
-          else
-            VIDEO_TITLE="$AUTO_TITLE"
-          fi
-
-          echo "Stream URL: $STREAM_BASE_URL"
-          echo "Video title: $VIDEO_TITLE"
-          echo "Video description: $INPUT_DESCRIPTION"
-
-          # Descargar playlist principal
-          wget --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:124.0) Gecko/20100101 Firefox/124.0" "${STREAM_BASE_URL}playlist.m3u8" -O playlist.m3u8
-
-          # Procesar la segunda mitad de la playlist con URLs absolutas
-          BASE=$(dirname "$STREAM_BASE_URL")
-          first_ts_line=$(grep -n '.ts' playlist.m3u8 | head -n1 | cut -d: -f1)
-          total_segs=$(grep '.ts' playlist.m3u8 | wc -l)
-          half=$((total_segs / 2))
-
-          head -n $((first_ts_line - 1)) playlist.m3u8 > half_playlist.m3u8
-          grep '.ts' playlist.m3u8 | tail -n $half | sed "s|^|$BASE/|" >> half_playlist.m3u8
-
-          # Descargar y concatenar segunda mitad con ffmpeg
-          echo "Downloading and concatenating second half..."
-          ffmpeg -protocol_whitelist file,https,tls,tcp -i half_playlist.m3u8 -c copy -y /mnt/workspace/temp_parts/part2.ts
-
-          # Subir segunda parte
-          echo "Uploading second part..."
-          python script.py --file /mnt/workspace/temp_parts/part2.ts --title "Vector | $VIDEO_TITLE | 2/2" --description "$INPUT_DESCRIPTION"
-
-          # Limpiar archivos temporales
-          rm /mnt/workspace/temp_parts/part2.ts half_playlist.m3u8 playlist.m3u8
-
       - name: Descargar y concatenar segmentos usando secuencia personalizada
         working-directory: /mnt/workspace
         run: |
