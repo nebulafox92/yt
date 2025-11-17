@@ -105,7 +105,7 @@ jobs:
 
           # Procesar segunda parte
           echo "Downloading and concatenating second part..."
-          ffmpeg -f concat \
+          ffmpeg -f concat -safe 0 \
             -i <(for f in $(cat segments_absolute_part2.txt); do echo "file '$f'"; done) \
             -c copy -y /mnt/workspace/temp_parts/part2.ts
 
